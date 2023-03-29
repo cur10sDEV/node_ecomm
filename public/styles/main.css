@@ -1,0 +1,50 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style-type: none;
+}
+
+body {
+  font-family: "sans-serif";
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+header {
+  background-color: #cceccc;
+  padding: 1rem 4rem;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+li > a {
+  font-size: 28px;
+  padding: 1rem;
+  color: navy;
+  font-weight: bold;
+}
+
+li > a:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 4rem 5rem;
+}
+
+main > h1 {
+  margin: 0.5rem 0;
+}

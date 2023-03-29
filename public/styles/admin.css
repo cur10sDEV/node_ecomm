@@ -1,0 +1,31 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+form > label {
+  font-size: 22px;
+  margin-bottom: 0.5rem;
+}
+
+form > input {
+  margin-bottom: 0.5rem;
+  font-size: 18px;
+  padding: 0.25rem;
+}
+
+form > button {
+  font-size: 18px;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #d3ffd3;
+  cursor: pointer;
+  border: 1px solid #d3ffd3;
+}
+
+form > button:hover {
+  border: 1px solid rgba(25, 25, 25, 1);
+}
