@@ -1,0 +1,33 @@
+<%- include("../partials/head.ejs") %>
+  <%- include("../partials/navbar.ejs") %>
+
+    <% if (product !==null || product !==undefined) { %>
+      <div class="grid">
+        <% const {id,title,imgUrl,price,description}=product; %>
+          <div class="product-card">
+            <header class="card-header">
+              <h1 class="product-title">
+                <%= title %>
+              </h1>
+            </header>
+            <div class="card-img">
+              <img src="<%= imgUrl %>" alt="<%= title %>">
+            </div>
+            <div class="card-content">
+              <h2 class="product-price">
+                $<%= price %>
+              </h2>
+              <p class="product-description">
+                <%= description %>
+              </p>
+              <div class="card-actions">
+                <%- include("../partials/addToCart.ejs", {id: product.id}) %>
+              </div>
+            </div>
+          </div>
+          <% } else { %>
+            <h2>No Product Found!</h2>
+            <% } %>
+      </div>
+      </main>
+      <%- include("../partials/footer.ejs") %>

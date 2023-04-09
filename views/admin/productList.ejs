@@ -1,0 +1,39 @@
+<%- include("../partials/head.ejs") %>
+  <%- include("../partials/navbar.ejs") %>
+
+    <main>
+      <% if (products.length> 0) { %>
+        <div class="grid">
+          <% for (let {id,title,imgUrl,price,description} of products) { %>
+            <div class="product-card">
+              <header class="card-header">
+                <h1 class="product-title">
+                  <%= title %>
+                </h1>
+              </header>
+              <div class="card-img">
+                <img src="<%= imgUrl %>" alt="<%= title %>">
+              </div>
+              <div class="card-content">
+                <h2 class="product-price">
+                  $<%= price %>
+                </h2>
+                <p class="product-description">
+                  <%= description %>
+                </p>
+                <div class="card-actions">
+                  <button class="btn"><a href="/admin/editProduct/<%= id %>?edit=true">Edit</a></button>
+                  <form action="/admin/deleteProduct" method="post">
+                    <button class="btn" type="submit">Delete</button>
+                    <input type="hidden" name="productId" value="<%= id %>">
+                  </form>
+                </div>
+              </div>
+            </div>
+            <% } %>
+              <% } else { %>
+                <h2>No Products Found!</h2>
+                <% } %>
+        </div>
+    </main>
+    <%- include("../partials/footer.ejs") %>

@@ -3,6 +3,7 @@ form {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  width: 500px;
 }
 
 form > label {
@@ -10,10 +11,12 @@ form > label {
   margin-bottom: 0.5rem;
 }
 
-form > input {
+form > input,
+form > textarea {
   margin-bottom: 0.5rem;
   font-size: 18px;
   padding: 0.25rem;
+  width: 100%;
 }
 
 form > button {
