@@ -3,7 +3,7 @@
 
     <% if (product !==null || product !==undefined) { %>
       <div class="grid">
-        <% const {id,title,imgUrl,price,description}=product; %>
+        <% const {_id,title,imgUrl,price,description}=product; %>
           <div class="product-card">
             <header class="card-header">
               <h1 class="product-title">
@@ -21,7 +21,7 @@
                 <%= description %>
               </p>
               <div class="card-actions">
-                <%- include("../partials/addToCart.ejs", {id: product.id}) %>
+                <%- include("../partials/addToCart.ejs", {id: _id}) %>
               </div>
             </div>
           </div>

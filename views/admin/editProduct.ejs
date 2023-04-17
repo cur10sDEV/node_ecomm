@@ -3,7 +3,7 @@
   <%- include("../partials/navbar.ejs") %>
 
     <main>
-      <% const {id,title,imgUrl,price,description}=product; %>
+      <% const {_id,title,imgUrl,price,description}=product; %>
         <form action="/admin/editProduct" method="post">
           <label for="title">Title</label>
           <input type="text" name="title" id="title" value="<%= title %>" />
@@ -15,7 +15,7 @@
           <textarea name="description" id="description" rows="5"><%= description %></textarea>
           <button type="submit">Update Product</button>
           <!-- product id -->
-          <input type="hidden" name="id" value="<%= id %>">
+          <input type="hidden" name="id" value="<%= _id %>">
         </form>
     </main>
     <%- include("../partials/footer.ejs") %>

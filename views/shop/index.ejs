@@ -4,7 +4,7 @@
     <main>
       <% if (products.length> 0) { %>
         <div class="grid">
-          <% for (let {id,title,imgUrl,price,description} of products) { %>
+          <% for (let {_id,title,imgUrl,price,description} of products) { %>
             <div class="product-card">
               <header class="card-header">
                 <h1 class="product-title">
@@ -22,8 +22,8 @@
                   <%= description %>
                 </p>
                 <div class="card-actions">
-                  <button><a href="/products/<%= id %>">Details</a></button>
-                  <%- include("../partials/addToCart.ejs", {id: id}) %>
+                  <button><a href="/products/<%= _id %>">Details</a></button>
+                  <%- include("../partials/addToCart.ejs", {id: _id}) %>
                 </div>
               </div>
             </div>

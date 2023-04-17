@@ -4,7 +4,7 @@
     <main>
       <% if (products.length> 0) { %>
         <div class="grid">
-          <% for (let {id,title,imgUrl,price,description} of products) { %>
+          <% for (let {_id,title,imgUrl,price,description} of products) { %>
             <div class="product-card">
               <header class="card-header">
                 <h1 class="product-title">
@@ -22,10 +22,10 @@
                   <%= description %>
                 </p>
                 <div class="card-actions">
-                  <button class="btn"><a href="/admin/editProduct/<%= id %>?edit=true">Edit</a></button>
+                  <button class="btn"><a href="/admin/editProduct/<%= _id %>?edit=true">Edit</a></button>
                   <form action="/admin/deleteProduct" method="post">
                     <button class="btn" type="submit">Delete</button>
-                    <input type="hidden" name="productId" value="<%= id %>">
+                    <input type="hidden" name="productId" value="<%= _id %>">
                   </form>
                 </div>
               </div>
