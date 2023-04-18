@@ -11,7 +11,14 @@ const productPage = (req, res) => {
 
 const addProduct = (req, res) => {
   const { title, imgUrl, price, description } = req.body;
-  const product = new Product(title, imgUrl, description, Number(price));
+  const product = new Product(
+    title,
+    imgUrl,
+    description,
+    Number(price),
+    null,
+    req.user._id
+  );
   product.save();
   res.redirect("/admin/products");
 };

@@ -2,13 +2,14 @@
 const mongodb = require("mongodb");
 const { getDB } = require("../db/connectDB");
 
-module.exports = class Product {
-  constructor(title, imgUrl, description, price, id) {
+class Product {
+  constructor(title, imgUrl, description, price, id, userId) {
     this.title = title;
     this.imgUrl = imgUrl;
     this.description = description;
     this.price = price;
     this._id = id ? new mongodb.ObjectId(id) : null;
+    this.userId = userId;
   }
 
   save() {
@@ -42,8 +43,7 @@ module.exports = class Product {
     const db = getDB();
     return db
       .collection("products")
-      .find({ _id: new mongodb.ObjectId(id) })
-      .next()
+      .findOne({ _id: new mongodb.ObjectId(id) })
       .then((product) => {
         return product;
       })
@@ -58,4 +58,6 @@ module.exports = class Product {
       .then((res) => console.log(res))
       .catch((err) => console.error(err));
   }
-};
+}
+
+module.exports = Product;

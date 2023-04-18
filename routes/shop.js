@@ -9,6 +9,7 @@ const {
   getOrders,
   addToCart,
   deleteCartItem,
+  postOrder,
 } = require("../controllers/shop");
 
 // Home Page
@@ -28,6 +29,8 @@ router.post("/deleteCartItem", deleteCartItem);
 
 // Orders
 router.get("/orders", getOrders);
+
+router.post("/orders", postOrder);
 
 // Checkout
 router.get("/checkout", getCheckout);

@@ -7,6 +7,8 @@ require("dotenv").config();
 // local imports
 const adminRouter = require("./routes/admin");
 const shopRouter = require("./routes/shop");
+// models
+const User = require("./models/user");
 
 // db
 const { connectDB } = require("./db/connectDB");
@@ -15,6 +17,17 @@ connectDB();
 // middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// user auth
+app.use((req, res, next) => {
+  User.findById("643e4a24de3376787a0dbbc1")
+    .then((user) => {
+      req.user = new User(user.username, user.email, user.cart, user._id);
+      next();
+    })
+    .catch((err) => console.error(err));
+});
+
 // public assets
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
