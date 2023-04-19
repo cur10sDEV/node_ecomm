@@ -50,12 +50,14 @@ class Product {
       .catch((err) => console.error(err));
   }
 
-  static deleteById(id) {
+  static deleteById(id, user) {
     const db = getDB();
     return db
       .collection("products")
       .deleteOne({ _id: new mongodb.ObjectId(id) })
-      .then((res) => console.log(res))
+      .then((res) => {
+        user.deleteItemFromCart(id);
+      })
       .catch((err) => console.error(err));
   }
 }
