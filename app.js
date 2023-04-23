@@ -11,7 +11,7 @@ const shopRouter = require("./routes/shop");
 const User = require("./models/user");
 
 // db
-const { connectDB } = require("./db/connectDB");
+const connectDB = require("./db/connectDB");
 connectDB();
 
 // middlewares
@@ -19,13 +19,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // user auth
-app.use((req, res, next) => {
-  User.findById("643e4a24de3376787a0dbbc1")
-    .then((user) => {
-      req.user = new User(user.username, user.email, user.cart, user._id);
-      next();
-    })
-    .catch((err) => console.error(err));
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findById("643e4a24de3376787a0dbbc1");
+    req.user = user;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    next();
+  }
 });
 
 // public assets
@@ -42,4 +44,6 @@ app.use(shopRouter);
 // 404 page
 app.use(require("./controllers/pageNotFound"));
 
-app.listen(3000, () => console.log(`Server started successfully`));
+app.listen(3000, () => {
+  console.log(`Server started successfully`);
+});

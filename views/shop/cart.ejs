@@ -2,13 +2,13 @@
   <%- include("../partials/navbar.ejs") %>
     <% if (products.length> 0) { %>
       <ul class="cartItems">
-        <% products.forEach((product)=> { %>
+        <% products.forEach(({productId, quantity})=> { %>
           <li class="cartItem">
             <p>
-              <%= product.title %> (<%= product.qty %>)
+              <%= productId.title %> (<%= quantity %>)
             </p>
             <form action="/deleteCartItem" method="post">
-              <input type="hidden" name="productId" value="<%= product._id %>">
+              <input type="hidden" name="productId" value="<%= productId._id %>">
               <button type="submit" class="btn">Delete</button>
             </form>
           </li>
