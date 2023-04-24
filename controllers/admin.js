@@ -6,6 +6,7 @@ const productPage = (req, res) => {
   res.render("admin/addProduct.ejs", {
     pageTitle: "Add Product",
     path: "/admin/addProduct",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -45,6 +46,7 @@ const getEditProduct = async (req, res) => {
       pageTitle: "Edit Product",
       path: "/admin/products",
       editing: edit,
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -77,6 +79,7 @@ const getProducts = async (req, res, next) => {
       products,
       pageTitle: "Admin Products",
       path: "/admin/products",
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);

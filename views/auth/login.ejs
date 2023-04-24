@@ -1,0 +1,14 @@
+<%- include("../partials/head.ejs") %>
+  <link rel="stylesheet" href="/styles/admin.css">
+  <%- include("../partials/navbar.ejs") %>
+
+    <main>
+      <form action="/auth/login" method="post">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" />
+        <button type="submit">Login</button>
+      </form>
+    </main>
+    <%- include("../partials/footer.ejs") %>

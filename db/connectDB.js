@@ -3,9 +3,7 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb://127.0.0.1:27017/shop?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0"
-    );
+    await mongoose.connect(process.env.DB_URI);
   } catch (error) {
     console.error(error);
   }

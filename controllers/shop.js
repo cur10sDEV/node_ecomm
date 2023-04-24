@@ -9,6 +9,7 @@ const getProducts = async (req, res, next) => {
       products,
       pageTitle: "Products",
       path: "/products",
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -24,6 +25,7 @@ const getProductDetails = async (req, res, next) => {
       product,
       pageTitle: `${product.title}`,
       path: "/products",
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -38,6 +40,7 @@ const getHome = async (req, res, next) => {
       products,
       pageTitle: "Shop",
       path: "/",
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -52,6 +55,7 @@ const getCart = async (req, res, next) => {
       pageTitle: "Cart",
       path: "/cart",
       products: cart.items,
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -91,6 +95,7 @@ const getOrders = async (req, res, next) => {
       pageTitle: "Orders",
       path: "/orders",
       orders: orders,
+      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -127,6 +132,7 @@ const getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
