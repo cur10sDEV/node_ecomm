@@ -177,3 +177,13 @@ form > button {
 form > button:hover {
   border: 1px solid rgba(25, 25, 25, 1);
 }
+
+.errorMessage {
+  color: #fff;
+  background-color: red;
+  width: 500px;
+  padding: 0.25rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+}

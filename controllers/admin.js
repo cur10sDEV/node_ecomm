@@ -3,11 +3,14 @@ const Product = require("../models/product");
 
 // add-product page
 const productPage = (req, res) => {
-  res.render("admin/addProduct.ejs", {
-    pageTitle: "Add Product",
-    path: "/admin/addProduct",
-    isAuthenticated: req.session.isLoggedIn,
-  });
+  if (req.session.isLoggedIn) {
+    res.render("admin/addProduct.ejs", {
+      pageTitle: "Add Product",
+      path: "/admin/addProduct",
+    });
+  } else {
+    res.redirect("/");
+  }
 };
 
 // add product
@@ -46,7 +49,6 @@ const getEditProduct = async (req, res) => {
       pageTitle: "Edit Product",
       path: "/admin/products",
       editing: edit,
-      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);
@@ -56,7 +58,7 @@ const getEditProduct = async (req, res) => {
 const postEditProduct = async (req, res) => {
   try {
     const { id, title, imgUrl, price, description } = req.body;
-    const product = await Product.findByIdAndUpdate(id, {
+    await Product.findByIdAndUpdate(id, {
       title,
       imgUrl,
       price,
@@ -79,7 +81,6 @@ const getProducts = async (req, res, next) => {
       products,
       pageTitle: "Admin Products",
       path: "/admin/products",
-      isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
     console.error(err);

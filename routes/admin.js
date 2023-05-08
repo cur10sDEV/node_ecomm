@@ -9,18 +9,21 @@ const {
   deleteProduct,
 } = require("../controllers/admin");
 
+// auth middleware
+const { isAuth } = require("../middlewares/auth");
+
 // <=================== Get Routes ===================>
-router.get("/addProduct", productPage);
+router.get("/addProduct", isAuth, productPage);
 
-router.get("/products", getProducts);
+router.get("/products", isAuth, getProducts);
 
-router.get("/editProduct/:productId", getEditProduct);
+router.get("/editProduct/:productId", isAuth, getEditProduct);
 
 // <================== Post Routes ===================>
-router.post("/addProduct", addProduct);
+router.post("/addProduct", isAuth, addProduct);
 
-router.post("/editProduct", postEditProduct);
+router.post("/editProduct", isAuth, postEditProduct);
 
-router.post("/deleteProduct", deleteProduct);
+router.post("/deleteProduct", isAuth, deleteProduct);
 
 module.exports = router;

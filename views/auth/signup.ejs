@@ -8,13 +8,17 @@
           <%= errorMessage %>
         </div>
         <% } %>
-          <form action="/auth/login" method="post">
+          <form action="/auth/signup" method="post">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" />
             <label for="email">Email</label>
             <input type="email" name="email" id="email" />
             <label for="password">Password</label>
             <input type="password" name="password" id="password" />
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" />
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button type="submit">Login</button>
+            <button type="submit">SignUp</button>
           </form>
     </main>
     <%- include("../partials/footer.ejs") %>

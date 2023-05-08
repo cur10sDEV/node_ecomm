@@ -12,6 +12,9 @@ const {
   postOrder,
 } = require("../controllers/shop");
 
+// auth middleware
+const { isAuth } = require("../middlewares/auth");
+
 // Home Page
 router.get("/", getHome);
 
@@ -21,18 +24,18 @@ router.get("/products", getProducts);
 router.get("/products/:id", getProductDetails);
 
 // Cart Page
-router.get("/cart", getCart);
+router.get("/cart", isAuth, getCart);
 
-router.post("/cart", addToCart);
+router.post("/cart", isAuth, addToCart);
 
-router.post("/deleteCartItem", deleteCartItem);
+router.post("/deleteCartItem", isAuth, deleteCartItem);
 
 // Orders
-router.get("/orders", getOrders);
+router.get("/orders", isAuth, getOrders);
 
-router.post("/orders", postOrder);
+router.post("/orders", isAuth, postOrder);
 
 // Checkout
-router.get("/checkout", getCheckout);
+router.get("/checkout", isAuth, getCheckout);
 
 module.exports = router;

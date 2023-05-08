@@ -5,6 +5,8 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
+const csrf = require("csurf");
+const flash = require("connect-flash");
 
 // local imports
 const adminRouter = require("./routes/admin");
@@ -20,6 +22,14 @@ connectDB();
 // middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// public assets
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
+// view engine ejs
+app.set("view engine", "ejs");
+app.set("views", "views");
+
 // mongodb-store-session
 const store = new MongoDBStore({
   uri: process.env.DB_URI,
@@ -27,7 +37,7 @@ const store = new MongoDBStore({
 });
 // Catch errors
 store.on("error", function (error) {
-  console.log(error);
+  console.error(error);
 });
 //session
 app.use(
@@ -40,24 +50,32 @@ app.use(
   })
 );
 
+// csrf token
+app.use(csrf());
+
+// flash message (like error)
+app.use(flash());
+
 // user auth
 app.use(async (req, res, next) => {
   try {
+    if (!req.session.user) {
+      return next();
+    }
     const user = await User.findById(req.session.user._id);
     req.user = user;
-  } catch (err) {
-    console.error(err);
-  } finally {
     next();
+  } catch (err) {
+    console.error(err.message);
   }
 });
 
-// public assets
-app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
-// view engine ejs
-app.set("view engine", "ejs");
-app.set("views", "views");
+// this middleware provides these locals(variable data) to every route
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 // routes
 app.use("/admin", adminRouter);

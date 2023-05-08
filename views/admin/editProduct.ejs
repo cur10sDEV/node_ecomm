@@ -13,6 +13,7 @@
           <input type="number" name="price" id="price" step="0.01" value="<%= price %>" />
           <label for="description">Description</label>
           <textarea name="description" id="description" rows="5"><%= description %></textarea>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Update Product</button>
           <!-- product id -->
           <input type="hidden" name="id" value="<%= _id %>">

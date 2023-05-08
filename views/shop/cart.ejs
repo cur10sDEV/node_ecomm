@@ -9,11 +9,13 @@
             </p>
             <form action="/deleteCartItem" method="post">
               <input type="hidden" name="productId" value="<%= productId._id %>">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button type="submit" class="btn">Delete</button>
             </form>
           </li>
           <% }) %>
             <form action="/orders" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button class="btn" type="submit">Order Now!</button>
             </form>
       </ul>
