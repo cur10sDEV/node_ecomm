@@ -58,12 +58,14 @@ const getEditProduct = async (req, res) => {
 const postEditProduct = async (req, res) => {
   try {
     const { id, title, imgUrl, price, description } = req.body;
-    await Product.findByIdAndUpdate(id, {
-      title,
-      imgUrl,
-      price,
-      description,
-    });
+    const product = await Product.findOne({ _id: id, userId: req.user._id });
+    if (product) {
+      product.title = title;
+      product.imgUrl = imgUrl;
+      product.price = price;
+      product.description = description;
+      await product.save();
+    }
   } catch (err) {
     console.error(err);
   } finally {
@@ -74,7 +76,7 @@ const postEditProduct = async (req, res) => {
 // // get products list
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find({ userId: req.user._id });
     // .select("title price imgUrl")
     // .populate("userId", "name");
     res.render("admin/productList.ejs", {
@@ -91,7 +93,7 @@ const getProducts = async (req, res, next) => {
 const deleteProduct = async (req, res, next) => {
   try {
     const { productId } = req.body;
-    await Product.findByIdAndDelete(productId);
+    await Product.deleteOne({ _id: productId, userId: req.user._id });
   } catch (err) {
     console.error(err);
   } finally {

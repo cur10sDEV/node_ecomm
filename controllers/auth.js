@@ -106,6 +106,13 @@ const postResetPassword = async (req, res, next) => {
       req.flash("error", "Email not found!");
       return res.redirect("/auth/resetPassword");
     }
+    if (user.resetTokenExpiration >= Date.now()) {
+      req.flash(
+        "error",
+        "Already requested for password reset, Please try again after 1 hour."
+      );
+      return res.redirect("/auth/resetPassword");
+    }
     user.resetToken = token;
     user.resetTokenExpiration = Date.now() + 3600000; // 1hr
     await user.save();
