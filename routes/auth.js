@@ -6,6 +6,10 @@ const {
   postLogout,
   getSignUp,
   postSignUp,
+  getResetPassword,
+  postResetPassword,
+  getNewPassword,
+  postNewPassword,
 } = require("../controllers/auth");
 
 // auth middleware
@@ -17,5 +21,11 @@ router.post("/logout", postLogout);
 
 router.get("/signup", isAuthForAuth, getSignUp);
 router.post("/signup", isAuthForAuth, postSignUp);
+
+router.get("/resetPassword", isAuthForAuth, getResetPassword);
+router.post("/resetPassword", isAuthForAuth, postResetPassword);
+
+router.get("/resetPassword/:token", isAuthForAuth, getNewPassword);
+router.post("/newPassword", isAuthForAuth, postNewPassword);
 
 module.exports = router;

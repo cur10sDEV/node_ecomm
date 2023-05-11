@@ -8,14 +8,11 @@
           <%= errorMessage %>
         </div>
         <% } %>
-          <form action="/auth/login" method="post">
+          <form action="/auth/resetPassword" method="post">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" />
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" />
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button type="submit">Login</button>
+            <button type="submit">Reset Password</button>
           </form>
-          <a class="btn" href="/auth/resetPassword">Reset Password</a>
     </main>
-    <%- include("../partials/footer.ejs") %>
+    <%- include("../partials/footer.ejs") %></link>

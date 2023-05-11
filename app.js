@@ -46,6 +46,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, //24 hrs expiry
+    },
     // cookie: {secure: true}
   })
 );
