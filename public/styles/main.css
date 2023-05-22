@@ -187,3 +187,7 @@ form > button:hover {
   border-radius: 5px;
   text-align: center;
 }
+
+.invalid {
+  border: 1px solid red;
+}

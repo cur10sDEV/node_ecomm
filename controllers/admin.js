@@ -1,12 +1,19 @@
 // db
 const Product = require("../models/product");
 
+const { validationResult } = require("express-validator");
+
 // add-product page
-const productPage = (req, res) => {
+const getAddProduct = (req, res) => {
+  let message = req.flash("error");
+  message = message.length > 0 ? message[0] : null;
   if (req.session.isLoggedIn) {
     res.render("admin/addProduct.ejs", {
       pageTitle: "Add Product",
       path: "/admin/addProduct",
+      errorMessage: message,
+      oldInput: { title: "", imgUrl: "", price: "", description: "" },
+      validationErrors: [],
     });
   } else {
     res.redirect("/");
@@ -14,9 +21,26 @@ const productPage = (req, res) => {
 };
 
 // add product
-const addProduct = async (req, res) => {
+const postAddProduct = async (req, res) => {
   try {
     const { title, imgUrl, price, description } = req.body;
+    // ===> product validation <===
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("admin/addProduct.ejs", {
+        pageTitle: "Add Product",
+        path: "/admin/addProduct",
+        errorMessage: errors.array()[0].msg,
+        oldInput: {
+          title: title,
+          imgUrl: imgUrl,
+          price: price,
+          description: description,
+        },
+        validationErrors: errors.array(),
+      });
+    }
+    // ======> <======
     const product = new Product({
       title: title,
       imgUrl: imgUrl,
@@ -25,16 +49,17 @@ const addProduct = async (req, res) => {
       userId: req.user,
     });
     await product.save();
+    res.redirect("/admin/products");
   } catch (err) {
     console.error(err);
-  } finally {
-    res.redirect("/admin/products");
   }
 };
 
 // edit product
 const getEditProduct = async (req, res) => {
   try {
+    let message = req.flash("error");
+    message = message.length > 0 ? message[0] : null;
     const { productId } = req.params;
     const { edit } = req.query;
     if (!edit) {
@@ -44,11 +69,13 @@ const getEditProduct = async (req, res) => {
     if (!product) {
       return res.redirect("/");
     }
-    res.render("admin/editProduct.ejs", {
+    return res.render("admin/editProduct.ejs", {
       product,
       pageTitle: "Edit Product",
       path: "/admin/products",
       editing: edit,
+      errorMessage: message,
+      validationErrors: [],
     });
   } catch (err) {
     console.error(err);
@@ -57,7 +84,25 @@ const getEditProduct = async (req, res) => {
 
 const postEditProduct = async (req, res) => {
   try {
+    const { edit } = req.query;
     const { id, title, imgUrl, price, description } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("admin/editProduct.ejs", {
+        pageTitle: "Edit Product",
+        path: "/admin/products",
+        editing: edit,
+        errorMessage: errors.array()[0].msg,
+        product: {
+          _id: id,
+          title: title,
+          imgUrl: imgUrl,
+          price: price,
+          description: description,
+        },
+        validationErrors: errors.array(),
+      });
+    }
     const product = await Product.findOne({ _id: id, userId: req.user._id });
     if (product) {
       product.title = title;
@@ -66,10 +111,9 @@ const postEditProduct = async (req, res) => {
       product.description = description;
       await product.save();
     }
+    res.redirect("/admin/products");
   } catch (err) {
     console.error(err);
-  } finally {
-    res.redirect("/admin/products");
   }
 };
 
@@ -102,10 +146,10 @@ const deleteProduct = async (req, res, next) => {
 };
 
 module.exports = {
-  addProduct,
+  postAddProduct,
   getEditProduct,
   postEditProduct,
-  productPage,
+  getAddProduct,
   getProducts,
   deleteProduct,
 };

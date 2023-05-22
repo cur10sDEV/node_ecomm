@@ -5,6 +5,9 @@ const { genHashedPassword, checkPassword } = require("../utils/hash");
 const { sendMail } = require("../utils/mailjet");
 const randomString = require("../utils/randomString");
 
+// validation
+const { validationResult, body } = require("express-validator");
+
 // login
 const getLogin = (req, res, next) => {
   let message = req.flash("error");
@@ -13,12 +16,24 @@ const getLogin = (req, res, next) => {
     pageTitle: "Login",
     path: "/auth/login",
     errorMessage: message,
+    oldInput: { email: "", password: "" },
+    validationErrors: [],
   });
 };
 
 const postLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("auth/login.ejs", {
+        pageTitle: "Login",
+        path: "/auth/login",
+        errorMessage: errors.array()[0].msg,
+        oldInput: { email: email },
+        validationErrors: errors.array(),
+      });
+    }
     const user = await User.findOne({ email: email });
     const match = user && (await checkPassword(password, user.password));
     if (!user || !match) {
@@ -54,19 +69,42 @@ const getSignUp = (req, res, next) => {
     pageTitle: "SignUp",
     path: "/auth/signup",
     errorMessage: message,
+    oldInput: { username: "", email: "" },
+    validationErrors: [],
   });
 };
 
 const postSignUp = async (req, res, next) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password } = req.body;
+    body("confirmPassword")
+      .trim()
+      .escape()
+      .custom((value) => {
+        if (value !== password) {
+          throw new Error("Password and Confirm Password do not match!");
+        }
+        return true;
+      });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      return res.status(422).render("auth/signup.ejs", {
+        pageTitle: "SignUp",
+        path: "/auth/signup",
+        errorMessage: errors.array()[0].msg,
+        oldInput: { username: username, email: email },
+        validationErrors: errors.array(),
+      });
+    }
+
+    // if (password !== confirmPassword) {
+    //   req.flash("error", "Password and Confirm Password do not match!");
+    //   return res.redirect("/auth/signup");
+    // }
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       req.flash("error", "Email already registered!");
-      return res.redirect("/auth/signup");
-    }
-    if (password !== confirmPassword) {
-      req.flash("error", "Password and Confirm Password do not match!");
       return res.redirect("/auth/signup");
     }
     const hashedPassword = await genHashedPassword(password);

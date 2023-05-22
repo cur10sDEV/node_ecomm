@@ -49,7 +49,7 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, //24 hrs expiry
     },
-    // cookie: {secure: true}
+    // cookie: { secure: true },
   })
 );
 

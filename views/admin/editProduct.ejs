@@ -3,20 +3,29 @@
   <%- include("../partials/navbar.ejs") %>
 
     <main>
-      <% const {_id,title,imgUrl,price,description}=product; %>
-        <form action="/admin/editProduct" method="post">
-          <label for="title">Title</label>
-          <input type="text" name="title" id="title" value="<%= title %>" />
-          <label for="imgUrl">Image url</label>
-          <input type="text" name="imgUrl" id="imgUrl" value="<%= imgUrl %>" />
-          <label for="price">Price</label>
-          <input type="number" name="price" id="price" step="0.01" value="<%= price %>" />
-          <label for="description">Description</label>
-          <textarea name="description" id="description" rows="5"><%= description %></textarea>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit">Update Product</button>
-          <!-- product id -->
-          <input type="hidden" name="id" value="<%= _id %>">
-        </form>
+      <% if (errorMessage) { %>
+        <div class="errorMessage">
+          <%= errorMessage %>
+        </div>
+        <% } %>
+          <% const {_id,title,imgUrl,price,description}=product; %>
+            <form action="/admin/editProduct" method="post">
+              <label for="title">Title</label>
+              <input class="<%=validationErrors.find(e=> e.path === 'title') ? 'invalid' : '' %>" type="text"
+                name="title" id="title" value="<%= title %>" />
+              <label for="imgUrl">Image url</label>
+              <input class="<%=validationErrors.find(e=> e.path === 'imgUrl') ? 'invalid' : '' %>" type="text"
+                name="imgUrl" id="imgUrl" value="<%= imgUrl %>" />
+              <label for="price">Price</label>
+              <input class="<%=validationErrors.find(e=> e.path === 'price') ? 'invalid' : '' %>" type="number"
+                name="price" id="price" step="0.01" value="<%= price %>" />
+              <label for="description">Description</label>
+              <textarea class="<%=validationErrors.find(e=> e.path === 'description') ? 'invalid' : '' %>"
+                name="description" id="description" rows="5"><%= description %></textarea>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit">Update Product</button>
+              <!-- product id -->
+              <input type="hidden" name="id" value="<%= _id %>">
+            </form>
     </main>
     <%- include("../partials/footer.ejs") %>
