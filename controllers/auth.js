@@ -6,7 +6,7 @@ const { sendMail } = require("../utils/mailjet");
 const randomString = require("../utils/randomString");
 
 // validation
-const { validationResult, body } = require("express-validator");
+const { validationResult } = require("express-validator");
 
 // login
 const getLogin = (req, res, next) => {
@@ -49,43 +49,49 @@ const postLogin = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
 // logout
 const postLogout = (req, res, next) => {
-  req.session.destroy((err) => {
-    if (err) console.error(err);
-    res.redirect("/auth/login");
-  });
+  try {
+    req.session.destroy((err) => {
+      if (err) console.error(err);
+      res.redirect("/auth/login");
+    });
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
 
 // signup
 const getSignUp = (req, res, next) => {
-  let message = req.flash("error");
-  message = message.length > 0 ? message[0] : null;
-  res.render("auth/signup.ejs", {
-    pageTitle: "SignUp",
-    path: "/auth/signup",
-    errorMessage: message,
-    oldInput: { username: "", email: "" },
-    validationErrors: [],
-  });
+  try {
+    let message = req.flash("error");
+    message = message.length > 0 ? message[0] : null;
+    res.render("auth/signup.ejs", {
+      pageTitle: "SignUp",
+      path: "/auth/signup",
+      errorMessage: message,
+      oldInput: { username: "", email: "" },
+      validationErrors: [],
+    });
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
 
 const postSignUp = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
-    body("confirmPassword")
-      .trim()
-      .escape()
-      .custom((value) => {
-        if (value !== password) {
-          throw new Error("Password and Confirm Password do not match!");
-        }
-        return true;
-      });
+    const { username, email, password, confirmPassword } = req.body;
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors.array());
@@ -98,10 +104,10 @@ const postSignUp = async (req, res, next) => {
       });
     }
 
-    // if (password !== confirmPassword) {
-    //   req.flash("error", "Password and Confirm Password do not match!");
-    //   return res.redirect("/auth/signup");
-    // }
+    if (password !== confirmPassword) {
+      req.flash("error", "Password and Confirm Password do not match!");
+      return res.redirect("/auth/signup");
+    }
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       req.flash("error", "Email already registered!");
@@ -120,19 +126,27 @@ const postSignUp = async (req, res, next) => {
     res.redirect("/auth/login");
     await sendMail(email, username, "accountVerification", { token });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
 // reset password
 const getResetPassword = (req, res, next) => {
-  let message = req.flash("error");
-  message = message.length > 0 ? message[0] : null;
-  res.render("auth/reset.ejs", {
-    pageTitle: "Reset Password",
-    path: "/auth/resetPassword",
-    errorMessage: message,
-  });
+  try {
+    let message = req.flash("error");
+    message = message.length > 0 ? message[0] : null;
+    res.render("auth/reset.ejs", {
+      pageTitle: "Reset Password",
+      path: "/auth/resetPassword",
+      errorMessage: message,
+    });
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
 
 const postResetPassword = async (req, res, next) => {
@@ -158,7 +172,9 @@ const postResetPassword = async (req, res, next) => {
     res.redirect("/auth/resetPassword");
     await sendMail(email, user.username, "passwordReset", { token });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -183,7 +199,9 @@ const getNewPassword = async (req, res, next) => {
       res.redirect("/auth/resetPassword");
     }
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -210,7 +228,9 @@ const postNewPassword = async (req, res, next) => {
       res.redirect("/auth/resetPassword");
     }
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 

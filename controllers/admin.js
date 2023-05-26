@@ -4,7 +4,7 @@ const Product = require("../models/product");
 const { validationResult } = require("express-validator");
 
 // add-product page
-const getAddProduct = (req, res) => {
+const getAddProduct = (req, res, next) => {
   let message = req.flash("error");
   message = message.length > 0 ? message[0] : null;
   if (req.session.isLoggedIn) {
@@ -21,7 +21,7 @@ const getAddProduct = (req, res) => {
 };
 
 // add product
-const postAddProduct = async (req, res) => {
+const postAddProduct = async (req, res, next) => {
   try {
     const { title, imgUrl, price, description } = req.body;
     // ===> product validation <===
@@ -51,12 +51,14 @@ const postAddProduct = async (req, res) => {
     await product.save();
     res.redirect("/admin/products");
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
 // edit product
-const getEditProduct = async (req, res) => {
+const getEditProduct = async (req, res, next) => {
   try {
     let message = req.flash("error");
     message = message.length > 0 ? message[0] : null;
@@ -78,11 +80,13 @@ const getEditProduct = async (req, res) => {
       validationErrors: [],
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
-const postEditProduct = async (req, res) => {
+const postEditProduct = async (req, res, next) => {
   try {
     const { edit } = req.query;
     const { id, title, imgUrl, price, description } = req.body;
@@ -113,7 +117,9 @@ const postEditProduct = async (req, res) => {
     }
     res.redirect("/admin/products");
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -129,7 +135,9 @@ const getProducts = async (req, res, next) => {
       path: "/admin/products",
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -138,10 +146,11 @@ const deleteProduct = async (req, res, next) => {
   try {
     const { productId } = req.body;
     await Product.deleteOne({ _id: productId, userId: req.user._id });
-  } catch (err) {
-    console.error(err);
-  } finally {
     res.redirect("/admin/products");
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 

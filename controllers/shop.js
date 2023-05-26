@@ -11,7 +11,9 @@ const getProducts = async (req, res, next) => {
       path: "/products",
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -26,7 +28,9 @@ const getProductDetails = async (req, res, next) => {
       path: "/products",
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -40,7 +44,9 @@ const getHome = async (req, res, next) => {
       path: "/",
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -54,7 +60,9 @@ const getCart = async (req, res, next) => {
       products: cart.items,
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -63,11 +71,12 @@ const addToCart = async (req, res, next) => {
   try {
     const { productId } = req.body;
     const product = await Product.findById(productId);
-    return req.user.addToCart(product);
-  } catch (err) {
-    console.error(err);
-  } finally {
+    req.user.addToCart(product);
     res.redirect("/cart");
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -76,10 +85,11 @@ const deleteCartItem = async (req, res, next) => {
   try {
     const { productId } = req.body;
     await req.user.deleteCartItem(productId);
-  } catch (err) {
-    console.error(err);
-  } finally {
     res.redirect("/cart");
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -93,7 +103,9 @@ const getOrders = async (req, res, next) => {
       orders: orders,
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
@@ -115,19 +127,26 @@ const postOrder = async (req, res, next) => {
     });
     await order.save();
     await req.user.clearCartItems();
-  } catch (err) {
-    console.error(err);
-  } finally {
     res.redirect("/orders");
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
   }
 };
 
 // Checkout
 const getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
-  });
+  try {
+    res.render("shop/checkout", {
+      pageTitle: "Checkout",
+      path: "/checkout",
+    });
+  } catch (err) {
+    const error = new Error(err);
+    err.httpStatusCode = 500;
+    return next(err);
+  }
 };
 
 module.exports = {

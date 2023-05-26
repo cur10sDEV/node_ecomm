@@ -12,11 +12,15 @@ const flash = require("connect-flash");
 const adminRouter = require("./routes/admin");
 const shopRouter = require("./routes/shop");
 const authRouter = require("./routes/auth");
+
+//errors
+const { pageNotFound, serverError } = require("./controllers/errors");
 // models
 const User = require("./models/user");
 
 // db
 const connectDB = require("./db/connectDB");
+const errorHandler = require("./middlewares/errorHandler");
 connectDB();
 
 // middlewares
@@ -59,20 +63,6 @@ app.use(csrf());
 // flash message (like error)
 app.use(flash());
 
-// user auth
-app.use(async (req, res, next) => {
-  try {
-    if (!req.session.user) {
-      return next();
-    }
-    const user = await User.findById(req.session.user._id);
-    req.user = user;
-    next();
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
 // this middleware provides these locals(variable data) to every route
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
@@ -80,13 +70,34 @@ app.use((req, res, next) => {
   next();
 });
 
+// user auth
+app.use(async (req, res, next) => {
+  try {
+    if (!req.session.user) {
+      return next();
+    }
+    const user = await User.findById(req.session.user._id);
+    if (user) {
+      req.user = user;
+    }
+    next();
+  } catch (err) {
+    next(new Error(err));
+  }
+});
+
 // routes
 app.use("/admin", adminRouter);
 app.use(shopRouter);
 app.use("/auth", authRouter);
 
+// 500 page
+app.get("/500", serverError);
 // 404 page
-app.use(require("./controllers/pageNotFound"));
+app.use(pageNotFound);
+
+// error handler middleware - will execute if any error occur or catch-block gets executed
+app.use(errorHandler);
 
 app.listen(3000, () => {
   console.log(`Server started successfully`);
