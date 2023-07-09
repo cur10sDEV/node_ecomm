@@ -30,14 +30,14 @@ router.get("/editProduct/:productId", isAuth, getEditProduct);
 // <================== Post Routes ===================>
 router.post(
   "/addProduct",
-  [checkTitle(), checkImgUrl(), checkPrice(), checkDescription()],
+  [checkTitle(), checkPrice(), checkDescription()],
   isAuth,
   postAddProduct
 );
 
 router.post(
   "/editProduct",
-  [checkTitle(), checkImgUrl(), checkPrice(), checkDescription()],
+  [checkTitle(), checkPrice(), checkDescription()],
   isAuth,
   postEditProduct
 );

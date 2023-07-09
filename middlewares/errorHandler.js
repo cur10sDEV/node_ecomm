@@ -1,9 +1,10 @@
 const errorHandler = (error, req, res, next) => {
-  // res.redirect("/500");
+  console.error(error);
   res.status(500).render("500", {
     pageTitle: "Server Error",
     path: "*",
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: res.locals.isAuthenticated,
+    csrfToken: res.locals.csrfToken,
   });
 };
 

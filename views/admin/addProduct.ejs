@@ -8,19 +8,18 @@
           <%= errorMessage %>
         </div>
         <% } %>
-          <form action="/admin/addProduct" method="post">
+          <form action="/admin/addProduct" method="post" enctype="multipart/form-data">
             <label for="title">Title</label>
             <input class="<%=validationErrors.find(e=> e.path === 'title') ? 'invalid' : '' %>" type="text" name="title"
               id="title" value="<%= oldInput.title %>" />
-            <label for="imgUrl">Image url</label>
-            <input class="<%=validationErrors.find(e=> e.path === 'imgUrl') ? 'invalid' : '' %>" type="text"
-              name="imgUrl" id="imgUrl" value="<%= oldInput.imgUrl %>" />
+            <label for="image">Image</label>
+            <input type="file" name="image" id="image" />
             <label for="price">Price</label>
             <input class="<%=validationErrors.find(e=> e.path === 'price') ? 'invalid' : '' %>" type="number"
               name="price" id="price" step="0.01" value="<%= oldInput.price %>" />
             <label for="description">Description</label>
             <textarea class="<%=validationErrors.find(e=> e.path === 'description') ? 'invalid' : '' %>"
-              name="description" id="description" rows="5" value="<%= oldInput.description %>"></textarea>
+              name="description" id="description" rows="5"><%= oldInput.description %></textarea>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit">Add Product</button>
           </form>

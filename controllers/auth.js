@@ -50,8 +50,8 @@ const postLogin = async (req, res, next) => {
     }
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -64,8 +64,8 @@ const postLogout = (req, res, next) => {
     });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -83,8 +83,8 @@ const getSignUp = (req, res, next) => {
     });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -127,8 +127,8 @@ const postSignUp = async (req, res, next) => {
     await sendMail(email, username, "accountVerification", { token });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -144,8 +144,8 @@ const getResetPassword = (req, res, next) => {
     });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -173,8 +173,8 @@ const postResetPassword = async (req, res, next) => {
     await sendMail(email, user.username, "passwordReset", { token });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -200,8 +200,8 @@ const getNewPassword = async (req, res, next) => {
     }
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -229,8 +229,8 @@ const postNewPassword = async (req, res, next) => {
     }
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 

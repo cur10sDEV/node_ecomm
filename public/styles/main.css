@@ -164,6 +164,15 @@ button > a {
   margin: 0.5rem;
 }
 
+.order-invoice {
+  color: rgb(65, 65, 254);
+  text-decoration: underline;
+}
+
+.order-invoice:hover {
+  color: rgb(0, 187, 255);
+}
+
 form > button {
   font-size: 18px;
   padding: 0.5rem 1.5rem;

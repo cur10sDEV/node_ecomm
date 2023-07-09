@@ -1,5 +1,6 @@
 // db
 const Product = require("../models/product");
+const { deleteFile } = require("../utils/fileHandler");
 
 const { validationResult } = require("express-validator");
 
@@ -12,7 +13,7 @@ const getAddProduct = (req, res, next) => {
       pageTitle: "Add Product",
       path: "/admin/addProduct",
       errorMessage: message,
-      oldInput: { title: "", imgUrl: "", price: "", description: "" },
+      oldInput: { title: "", price: "", description: "" },
       validationErrors: [],
     });
   } else {
@@ -23,7 +24,21 @@ const getAddProduct = (req, res, next) => {
 // add product
 const postAddProduct = async (req, res, next) => {
   try {
-    const { title, imgUrl, price, description } = req.body;
+    const { title, price, description } = req.body;
+    const image = req.file;
+    if (!image) {
+      return res.status(422).render("admin/addProduct.ejs", {
+        pageTitle: "Add Product",
+        path: "/admin/addProduct",
+        errorMessage: "Selected file is not an image",
+        oldInput: {
+          title: title,
+          price: price,
+          description: description,
+        },
+        validationErrors: [],
+      });
+    }
     // ===> product validation <===
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -33,7 +48,6 @@ const postAddProduct = async (req, res, next) => {
         errorMessage: errors.array()[0].msg,
         oldInput: {
           title: title,
-          imgUrl: imgUrl,
           price: price,
           description: description,
         },
@@ -43,7 +57,7 @@ const postAddProduct = async (req, res, next) => {
     // ======> <======
     const product = new Product({
       title: title,
-      imgUrl: imgUrl,
+      imgUrl: image.path,
       description: description,
       price: price,
       userId: req.user,
@@ -52,8 +66,8 @@ const postAddProduct = async (req, res, next) => {
     res.redirect("/admin/products");
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -81,15 +95,16 @@ const getEditProduct = async (req, res, next) => {
     });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
 const postEditProduct = async (req, res, next) => {
   try {
     const { edit } = req.query;
-    const { id, title, imgUrl, price, description } = req.body;
+    const { id, title, price, description } = req.body;
+    const image = req.file;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).render("admin/editProduct.ejs", {
@@ -100,7 +115,6 @@ const postEditProduct = async (req, res, next) => {
         product: {
           _id: id,
           title: title,
-          imgUrl: imgUrl,
           price: price,
           description: description,
         },
@@ -110,7 +124,10 @@ const postEditProduct = async (req, res, next) => {
     const product = await Product.findOne({ _id: id, userId: req.user._id });
     if (product) {
       product.title = title;
-      product.imgUrl = imgUrl;
+      if (image) {
+        deleteFile(product.imgUrl);
+        product.imgUrl = image.path;
+      }
       product.price = price;
       product.description = description;
       await product.save();
@@ -118,8 +135,8 @@ const postEditProduct = async (req, res, next) => {
     res.redirect("/admin/products");
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -136,8 +153,8 @@ const getProducts = async (req, res, next) => {
     });
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -145,12 +162,17 @@ const getProducts = async (req, res, next) => {
 const deleteProduct = async (req, res, next) => {
   try {
     const { productId } = req.body;
+    const product = await Product.findById(productId);
+    if (!product) {
+      return next(new Error("Product not found!"));
+    }
+    deleteFile(product.imgUrl);
     await Product.deleteOne({ _id: productId, userId: req.user._id });
     res.redirect("/admin/products");
   } catch (err) {
     const error = new Error(err);
-    err.httpStatusCode = 500;
-    return next(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 

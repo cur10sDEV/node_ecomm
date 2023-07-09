@@ -7,6 +7,7 @@ const {
   getCart,
   getCheckout,
   getOrders,
+  getOrderInvoice,
   addToCart,
   deleteCartItem,
   postOrder,
@@ -34,6 +35,9 @@ router.post("/deleteCartItem", isAuth, deleteCartItem);
 router.get("/orders", isAuth, getOrders);
 
 router.post("/orders", isAuth, postOrder);
+
+// Order Invoices
+router.get("/orders/:orderId", isAuth, getOrderInvoice);
 
 // Checkout
 router.get("/checkout", isAuth, getCheckout);

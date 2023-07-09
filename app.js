@@ -7,6 +7,7 @@ const cors = require("cors");
 require("dotenv").config();
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 // local imports
 const adminRouter = require("./routes/admin");
@@ -26,9 +27,38 @@ connectDB();
 // middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+// multer-configs
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, "./uploads/images");
+  },
+  filename: function (req, file, cb) {
+    return cb(null, `${file.originalname}`);
+  },
+});
+// only allow images
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+// multer
+app.use(multer({ storage, fileFilter }).single("image"));
 
 // public assets
 app.use(express.static(path.join(__dirname, "public")));
+// images
+app.use(
+  "/uploads/images",
+  express.static(path.join(__dirname, "uploads", "images"))
+);
+
 app.use(cors());
 // view engine ejs
 app.set("view engine", "ejs");

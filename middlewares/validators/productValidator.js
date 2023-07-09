@@ -28,8 +28,8 @@ const checkDescription = (req, res, next) => {
     "Description must be in range 5 to 1024 characters"
   )
     .trim()
-    .escape()
     .isString()
+    .escape()
     .isLength({ min: 5, max: 512 });
 };
 
