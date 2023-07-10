@@ -7,11 +7,31 @@ const pdfDocument = require("pdfkit");
 // get all products - product list page
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    // pagination
+    const currentPage = Number(req.query.page) || 1;
+    const productCount = await Product.find().countDocuments();
+    const firstPage = 1;
+    const lastPage = Math.ceil(productCount / process.env.ITEMS_PER_PAGE);
+    const hasPreviousPage = currentPage > 1;
+    const hasNextPage = currentPage < lastPage;
+    const previousPage = hasPreviousPage ? currentPage - 1 : 1;
+    const nextPage = hasNextPage ? currentPage + 1 : lastPage;
+
+    // find products based on page number
+    const products = await Product.find()
+      .skip((currentPage - 1) * process.env.ITEMS_PER_PAGE)
+      .limit(process.env.ITEMS_PER_PAGE);
     res.render("shop/productList.ejs", {
       products,
       pageTitle: "Products",
       path: "/products",
+      currentPage,
+      nextPage,
+      previousPage,
+      firstPage,
+      lastPage,
+      hasPreviousPage,
+      hasNextPage,
     });
   } catch (err) {
     const error = new Error(err);
@@ -40,11 +60,31 @@ const getProductDetails = async (req, res, next) => {
 // Index - Home Page
 const getHome = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    // pagination
+    const currentPage = Number(req.query.page) || 1;
+    const productCount = await Product.find().countDocuments();
+    const firstPage = 1;
+    const lastPage = Math.ceil(productCount / process.env.ITEMS_PER_PAGE);
+    const hasPreviousPage = currentPage > 1;
+    const hasNextPage = currentPage < lastPage;
+    const previousPage = hasPreviousPage ? currentPage - 1 : 1;
+    const nextPage = hasNextPage ? currentPage + 1 : lastPage;
+
+    // find products based on page number
+    const products = await Product.find()
+      .skip((currentPage - 1) * process.env.ITEMS_PER_PAGE)
+      .limit(process.env.ITEMS_PER_PAGE);
     res.render("shop/index.ejs", {
       products,
       pageTitle: "Shop",
       path: "/",
+      currentPage,
+      nextPage,
+      previousPage,
+      firstPage,
+      lastPage,
+      hasPreviousPage,
+      hasNextPage,
     });
   } catch (err) {
     const error = new Error(err);

@@ -200,3 +200,21 @@ form > button:hover {
 .invalid {
   border: 1px solid red;
 }
+
+.pagination {
+  margin-top: 25px;
+  font-size: 24px;
+  color: green;
+}
+
+.pagination > a {
+  margin: 5px;
+  border: 1px solid green;
+  padding: 5px;
+}
+
+.pagination > a:hover,
+.pagination > a:active {
+  background-color: green;
+  color: white;
+}

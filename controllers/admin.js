@@ -143,13 +143,33 @@ const postEditProduct = async (req, res, next) => {
 // // get products list
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({ userId: req.user._id });
+    // pagination
+    const currentPage = Number(req.query.page) || 1;
+    const productCount = await Product.find().countDocuments();
+    const firstPage = 1;
+    const lastPage = Math.ceil(productCount / process.env.ITEMS_PER_PAGE);
+    const hasPreviousPage = currentPage > 1;
+    const hasNextPage = currentPage < lastPage;
+    const previousPage = hasPreviousPage ? currentPage - 1 : 1;
+    const nextPage = hasNextPage ? currentPage + 1 : lastPage;
+
+    // find products based on page number
+    const products = await Product.find({ userId: req.user._id })
+      .skip((currentPage - 1) * process.env.ITEMS_PER_PAGE)
+      .limit(process.env.ITEMS_PER_PAGE);
     // .select("title price imgUrl")
     // .populate("userId", "name");
     res.render("admin/productList.ejs", {
       products,
       pageTitle: "Admin Products",
       path: "/admin/products",
+      currentPage,
+      nextPage,
+      previousPage,
+      firstPage,
+      lastPage,
+      hasPreviousPage,
+      hasNextPage,
     });
   } catch (err) {
     const error = new Error(err);

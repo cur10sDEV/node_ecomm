@@ -28,9 +28,10 @@
               </div>
             </div>
             <% } %>
-              <% } else { %>
-                <h2>No Products Found!</h2>
-                <% } %>
         </div>
+        <%- include("../partials/pagination.ejs") %>
+          <% } else { %>
+            <h2>No Products Found!</h2>
+            <% } %>
     </main>
     <%- include("../partials/footer.ejs") %>
