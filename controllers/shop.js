@@ -1,5 +1,6 @@
 const Order = require("../models/order");
 const Product = require("../models/product");
+const User = require("../models/user");
 const fs = require("fs");
 const path = require("path");
 const pdfDocument = require("pdfkit");
@@ -97,10 +98,14 @@ const getHome = async (req, res, next) => {
 const getCart = async (req, res, next) => {
   try {
     const { cart } = await req.user.populate("cart.items.productId");
+    const cartItems = cart.items.filter((item) => item.productId !== null);
+    const user = await User.findById(req.user._id);
+    user.cart.items = cartItems;
+    await user.save();
     res.render("shop/cart", {
       pageTitle: "Cart",
       path: "/cart",
-      products: cart.items,
+      products: cartItems,
     });
   } catch (err) {
     const error = new Error(err);

@@ -122,7 +122,7 @@ const postSignUp = async (req, res, next) => {
       cart: { items: [] },
     });
     await user.save();
-    const token = await randomString();
+    const token = await randomString(32);
     res.redirect("/auth/login");
     await sendMail(email, username, "accountVerification", { token });
   } catch (err) {
@@ -152,7 +152,7 @@ const getResetPassword = (req, res, next) => {
 const postResetPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const token = await randomString();
+    const token = await randomString(32);
     const user = await User.findOne({ email: email });
     if (!user) {
       req.flash("error", "Email not found!");

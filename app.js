@@ -8,6 +8,7 @@ require("dotenv").config();
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const randomString = require("./utils/randomString");
 
 // local imports
 const adminRouter = require("./routes/admin");
@@ -32,8 +33,8 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     return cb(null, "./uploads/images");
   },
-  filename: function (req, file, cb) {
-    return cb(null, `${file.originalname}`);
+  filename: async function (req, file, cb) {
+    return cb(null, `${(await randomString(8)) + "_" + file.originalname}`);
   },
 });
 // only allow images
@@ -53,11 +54,6 @@ app.use(multer({ storage, fileFilter }).single("image"));
 
 // public assets
 app.use(express.static(path.join(__dirname, "public")));
-// images
-app.use(
-  "/uploads/images",
-  express.static(path.join(__dirname, "uploads", "images"))
-);
 
 app.use(cors());
 // view engine ejs
@@ -115,6 +111,11 @@ app.use(async (req, res, next) => {
     next(new Error(err));
   }
 });
+// images
+app.use(
+  "/uploads/images",
+  express.static(path.join(__dirname, "uploads", "images"))
+);
 
 // routes
 app.use("/admin", adminRouter);

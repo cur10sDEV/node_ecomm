@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 
-const randomString = async () => {
-  const result = await crypto.randomBytes(32).toString("hex");
+const randomString = async (len) => {
+  const result = await crypto.randomBytes(len).toString("hex");
   return result;
 };
 
